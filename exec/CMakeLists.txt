@@ -1,0 +1,2 @@
+add_executable (ConcordanceCreator main.cpp)
+target_link_libraries (ConcordanceCreator LINK_PUBLIC Concordance)
