@@ -9,7 +9,12 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_executable(ConcordanceTest ConcordanceTest.cpp)
+set(TestFiles 
+	"ConcordanceTest.cpp" 
+	"OutputFormattingsTest.cpp"
+)
+
+add_executable(ConcordanceTest ${TestFiles})
 
 target_link_libraries(ConcordanceTest
   PRIVATE
