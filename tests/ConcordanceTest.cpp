@@ -155,16 +155,16 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExampleDataset()
         {"bonus", {2}},
         {"concordance", {1}},
         {"document", {1}},
-        {"each", {2}},
+        {"each", {2,2}},
         {"english", {1}},
         {"frequencies", {1}},
         {"generate", {1}},
         {"given", {1}},
         {"i.e.", {1}},
         {"in", {1,2}},
-        {"it", {2}},
         {"label", {2}},
         {"labeled", {1}},
+        {"list", {1}},
         {"numbers", {2}},
         {"occurrence", {2}},
         {"occurrences", {1}},
@@ -176,6 +176,7 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExampleDataset()
         {"the", {2}},
         {"which", {2}},
         {"will", {1}},
+        {"with", {1,2}},
         {"word", {1,1,2}},
         {"write", {1}},
         {"written", {1}},
@@ -184,7 +185,7 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExampleDataset()
     return expectation;
 }
 
-TEST_F(createConcordanceFromFileFixture, DISABLED_ExampleDataset)
+TEST_F(createConcordanceFromFileFixture, ExampleDataset)
 {
     Concordance concordance = Concordance::makeFromFile(m_temp_file);
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfExampleDataset();

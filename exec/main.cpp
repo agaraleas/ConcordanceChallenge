@@ -171,6 +171,8 @@ static void printConcordance(const Concordance &concordance)
     auto print_to_console = [](WordIndex index, const Word &word, const Occurrences &occurrences){
         std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurrences) << std::endl;
     };
+
+    concordance.forEachWord(print_to_console);
 }
 //END OF INTERNAL AUX FUNCTIONS
 
