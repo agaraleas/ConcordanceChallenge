@@ -13,27 +13,27 @@ using Word = std::string;
 using WordIndex = size_t;
 
 //==========================================================================|
-//								Occurences									|
+//								Occurrences									|
 //==========================================================================|
 // @brief: Object which holds the sentences of a found word					|
 //==========================================================================|
 
-class Occurences
+class Occurrences
 {
 public:
 	const std::vector<Sentence> &get() const;
-	Occurences &operator << (Sentence sentence);
-	bool operator == (const Occurences &other) const;
+	Occurrences &operator << (Sentence sentence);
+	bool operator == (const Occurrences &other) const;
 
 private:
-	std::vector<Sentence> m_occurences;
+	std::vector<Sentence> m_occurrences;
 };
 
 //==========================================================================|
 //								Concordance									|
 //==========================================================================|
 // @brief: Object which depicts a collection of words found in a text		|
-//		   document along with their occurences inside that document		|
+//		   document along with their occurrences inside that document		|
 //==========================================================================|
 
 class Concordance
@@ -54,7 +54,7 @@ public:
 
 	size_t size() const;
 
-	using IteratorFunc = std::function<void(WordIndex, const Word &, const Occurences &)>;
+	using IteratorFunc = std::function<void(WordIndex, const Word &, const Occurrences &)>;
 	void forEachWord(const IteratorFunc &run_callback) const;
 
 	void add(const Word&, const Sentence&);

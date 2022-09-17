@@ -30,9 +30,9 @@ static void fillWithTrailingWhitespace(Word &word, size_t quantity)
 	word = ss.str();
 }
 
-static void printWordOfConcordance(WordIndex index, const Word &word, const Occurences &occurences)
+static void printWordOfConcordance(WordIndex index, const Word &word, const Occurrences &occurrences)
 {
-	std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurences) << std::endl;
+	std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurrences) << std::endl;
 }
 
 static std::tuple<char, size_t> convertWordIndexToEnglishLetters(WordIndex index)
@@ -81,11 +81,11 @@ std::string makePrintable(const Word &word)
 	return printable;
 }
 
-std::string makePrintable(const Occurences &occurences)
+std::string makePrintable(const Occurrences &occurrences)
 {
 	std::string printable = "{";
 
-	const std::vector<Sentence> &sentences = occurences.get();
+	const std::vector<Sentence> &sentences = occurrences.get();
 	printable += std::to_string(sentences.size());
 	printable += ":";
 

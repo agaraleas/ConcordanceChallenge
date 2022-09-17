@@ -14,11 +14,11 @@ class Concordance::Impl
 public:
 	size_t size() const;
 	bool equalsWith(const Concordance::Impl &other) const;
-	void addOccurence(const Word &word, Sentence sentence);
+	void addOccurrence(const Word &word, Sentence sentence);
 	void forEachWord(const IteratorFunc &run_callback) const;
 
 private:
-	std::map<Word, Occurences> m_concordance;
+	std::map<Word, Occurrences> m_concordance;
 };
 //END OF INTERNAL CLASS DECLARATIONS`
 
@@ -38,10 +38,10 @@ bool Concordance::Impl::equalsWith(const Concordance::Impl &other) const
 	return m_concordance == other.m_concordance;
 }
 
-void Concordance::Impl::addOccurence(const Word &word, Sentence sentence)
+void Concordance::Impl::addOccurrence(const Word &word, Sentence sentence)
 {
-	Occurences &word_occurences = m_concordance[word];
-	word_occurences << sentence;
+	Occurrences &word_occurrences = m_concordance[word];
+	word_occurrences << sentence;
 }
 
 void Concordance::Impl::forEachWord(const IteratorFunc &run_callback) const
@@ -50,8 +50,8 @@ void Concordance::Impl::forEachWord(const IteratorFunc &run_callback) const
 
 	for( const auto &pair : m_concordance ){
 		const Word &word = pair.first;
-		const Occurences &occurences = pair.second;
-		run_callback(index++, word, occurences);
+		const Occurrences &occurrences = pair.second;
+		run_callback(index++, word, occurrences);
 	}
 }
 //END OF INTERNAL CLASS DEFINITIONS
@@ -60,22 +60,22 @@ void Concordance::Impl::forEachWord(const IteratorFunc &run_callback) const
 
 //EXTERNAL CLASS DEFINITIONS
 //==========================================================================|
-//								Occurences									|
+//								Occurrences									|
 //==========================================================================|
-Occurences &Occurences::operator<<(Sentence sentence)
+Occurrences &Occurrences::operator<<(Sentence sentence)
 {
-	m_occurences.push_back(sentence);
+	m_occurrences.push_back(sentence);
 	return *this;
 }
 
-bool Occurences::operator==(const Occurences &other) const
+bool Occurrences::operator==(const Occurrences &other) const
 {
-	return m_occurences == other.m_occurences;
+	return m_occurrences == other.m_occurrences;
 }
 
-const std::vector<Sentence> &Occurences::get() const
+const std::vector<Sentence> &Occurrences::get() const
 {
-	return m_occurences;
+	return m_occurrences;
 }
 
 //==========================================================================|
@@ -138,7 +138,7 @@ void Concordance::forEachWord(const IteratorFunc &run_callback) const
 
 void Concordance::add(const Word &word, const Sentence &sentence)
 {
-	m_impl->addOccurence(word, sentence);
+	m_impl->addOccurrence(word, sentence);
 }
 
 Concordance Concordance::makeEmpty()

@@ -10,13 +10,13 @@ using Word = std::string;
 using WordIndex = size_t;
 
 //Forward Declaratinos
-class Occurences;
+class Occurrences;
 
 //==========================================================================|
 //						    Formatting Functions							|
 //==========================================================================|
 std::string makePrintable(WordIndex index);
 std::string makePrintable(const Word &word);
-std::string makePrintable(const Occurences &occurences);
+std::string makePrintable(const Occurrences &occurrences);
 
 #endif

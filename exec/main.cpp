@@ -168,8 +168,8 @@ static bool existHelpFlag(const std::vector<CommandLineArg> &all_args)
 
 static void printConcordance(const Concordance &concordance)
 {
-    auto print_to_console = [](WordIndex index, const Word &word, const Occurences &occurences){
-        std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurences) << std::endl;
+    auto print_to_console = [](WordIndex index, const Word &word, const Occurrences &occurrences){
+        std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurrences) << std::endl;
     };
 }
 //END OF INTERNAL AUX FUNCTIONS

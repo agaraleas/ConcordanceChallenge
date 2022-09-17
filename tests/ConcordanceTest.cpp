@@ -2,30 +2,30 @@
 #include <fstream>
 #include "Concordance.hpp"
 
-TEST(ConcordanceTests, OccurenceInsertions)
+TEST(ConcordanceTests, OccurrenceInsertions)
 {
-    Occurences occurences;
-    occurences << 1 << 3;
+    Occurrences occurrences;
+    occurrences << 1 << 3;
 
-    const std::vector<Sentence> &sentences = occurences.get();
+    const std::vector<Sentence> &sentences = occurrences.get();
     EXPECT_EQ(sentences.size(), 2);
     EXPECT_EQ(sentences.front(), 1);
     EXPECT_EQ(sentences.back(), 3);
 }
 
-TEST(ConcordanceTests, OccurenceEquality)
+TEST(ConcordanceTests, OccurrenceEquality)
 {
-    Occurences occurence1;
-    occurence1 << 1 << 3;
+    Occurrences occurrence1;
+    occurrence1 << 1 << 3;
 
-    Occurences occurence2;
-    occurence2 << 1 << 3;
+    Occurrences occurrence2;
+    occurrence2 << 1 << 3;
 
-    EXPECT_EQ(occurence1 == occurence2, true);
+    EXPECT_EQ(occurrence1 == occurrence2, true);
 
-    occurence2 << 4 << 5;
+    occurrence2 << 4 << 5;
 
-    EXPECT_EQ(occurence1 == occurence2, false);
+    EXPECT_EQ(occurrence1 == occurrence2, false);
 }
 
 static Concordance generateConcordanceForDatasetA()
@@ -62,11 +62,11 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfDatasetA()
 EXPECT_EQ(CONCORDANCE.size(), EXPECTATION.size());                                                  \
 auto current = EXPECTATION.begin();                                                                 \
                                                                                                     \
-CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurences &occurences){       \
+CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences &occurrences){       \
     ASSERT_LE(index, EXPECTATION.size());                                                           \
     EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
     EXPECT_EQ(word, current->first);                                                                \
-    EXPECT_EQ(occurences.get(), current->second);                                                   \
+    EXPECT_EQ(occurrences.get(), current->second);                                                   \
 })                                                                                                  \
 
 TEST(ConcordanceTests, DISABLED_ConcordanceCreationFromSentences_A)

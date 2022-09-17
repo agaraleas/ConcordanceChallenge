@@ -22,11 +22,11 @@ TEST(ConcordanceFormat, WordDisplay)
     EXPECT_EQ(makePrintable("averydummylargewordthatexceedslimit"), "averydummylargewo...");
 }
 
-TEST(ConcordanceFormat, OccurenceDisplay)
+TEST(ConcordanceFormat, OccurrenceDisplay)
 {
-    Occurences occurences;
-    occurences << 1;
-    EXPECT_EQ(makePrintable(occurences), "{1:1}");
-    occurences << 3 << 4;
-    EXPECT_EQ(makePrintable(occurences), "{3:1,3,4}");
+    Occurrences occurrences;
+    occurrences << 1;
+    EXPECT_EQ(makePrintable(occurrences), "{1:1}");
+    occurrences << 3 << 4;
+    EXPECT_EQ(makePrintable(occurrences), "{3:1,3,4}");
 }
