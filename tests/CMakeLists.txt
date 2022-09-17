@@ -12,6 +12,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 set(TestFiles 
 	"ConcordanceTest.cpp" 
 	"OutputFormattingsTest.cpp"
+	"TextDocumentTravellerTest.cpp"
 )
 
 add_executable(ConcordanceTest ${TestFiles})
