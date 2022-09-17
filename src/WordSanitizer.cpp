@@ -76,7 +76,7 @@ static void toLowercase(Word &word)
 
 static bool isAlphanumeric(char c)
 {
-	return std::isalnum(c);
+	return std::isalnum(static_cast<unsigned char>(c));
 }
 
 static bool isDot(char c)

@@ -11,7 +11,7 @@ static bool shouldBeIgnoredInValidations(char c)
 static bool containsIllegalSymbols(const Word &word)
 {
 	auto is_illegal = [](char c){
-		return !std::isalnum(c) && !shouldBeIgnoredInValidations(c);
+		return !std::isalnum(static_cast<unsigned char>(c)) && !shouldBeIgnoredInValidations(c);
 	};
 
 	return std::any_of(word.begin(), word.end(), is_illegal);
@@ -19,7 +19,11 @@ static bool containsIllegalSymbols(const Word &word)
 
 static bool areAlphabeticalCharactersMissing(const Word &word)
 {
-	return std::none_of(word.begin(), word.end(), std::isalpha);
+	auto is_alphabetical = [](char c){
+		return std::isalpha(static_cast<unsigned char>(c));
+	};
+
+	return std::none_of(word.begin(), word.end(), is_alphabetical);
 }
 //END OF INTERNAL AUXILIIARY CLASSES AND FUNCTIONS
 

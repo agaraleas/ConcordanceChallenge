@@ -51,7 +51,7 @@ static bool isWhitespace(char c)
 
 static bool isSymbol(char c)
 {
-	return !std::isalnum(c);
+	return !std::isalnum(static_cast<unsigned char>(c));
 }
 
 static bool isDot(char c)
@@ -109,7 +109,7 @@ static bool nextLetterIsLowercase(std::string::const_iterator current, const std
 {
 	std::string::const_iterator next = current != chunk.end() ? current + 1 : chunk.end();
 
-	if( next != chunk.end() && std::isalpha(*next) ){
+	if( next != chunk.end() && std::isalpha(static_cast<unsigned char>(*next)) ){
 		return std::islower(*next);
 	}
 
