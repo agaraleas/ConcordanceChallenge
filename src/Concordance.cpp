@@ -4,6 +4,8 @@
 #include <deque>
 #include <algorithm>
 
+#include "WordSanitizer.hpp"
+
 
 //INTERNAL CLASS DECLARATIONS
 //==========================================================================|
@@ -22,6 +24,13 @@ private:
 };
 //END OF INTERNAL CLASS DECLARATIONS`
 
+
+//INTERNAL AUXILIARY CLASSES AND FUNCTIONS
+static bool isAbbreviation(const Word &word)
+{
+	return std::count(word.begin(), word.end(), '.') > 1;
+}
+//END OF INTERNAL AUXILIARY CLASSES AND FUNCTIONS
 
 
 //INTERNAL CLASS DEFINITIONS
@@ -138,7 +147,14 @@ void Concordance::forEachWord(const IteratorFunc &run_callback) const
 
 void Concordance::add(const Word &word, const Sentence &sentence)
 {
-	m_impl->addOccurrence(word, sentence);
+	WordSanitizer sanitizer;
+
+	if( isAbbreviation(word) ){
+		sanitizer.setAbbreviationSanitization();
+	}
+
+	Word sanitized = sanitizer.sanitize(word);
+	m_impl->addOccurrence(sanitized, sentence);
 }
 
 Concordance Concordance::makeEmpty()

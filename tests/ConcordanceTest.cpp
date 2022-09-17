@@ -67,6 +67,7 @@ CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences
     EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
     EXPECT_EQ(word, current->first);                                                                \
     EXPECT_EQ(occurrences.get(), current->second);                                                   \
+    ++current;                                                                                       \
 })                                                                                                  \
 
 TEST(ConcordanceTests, DISABLED_ConcordanceCreationFromSentences_A)
@@ -109,7 +110,7 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfDatasetB()
     return expectation;
 }
 
-TEST(ConcordanceTests, DISABLED_ConcordanceCreationFromSentences_B)
+TEST(ConcordanceTests, ConcordanceCreationFromSentences_B)
 {
     Concordance concordance = generateConcordanceForDatasetB();
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfDatasetB();

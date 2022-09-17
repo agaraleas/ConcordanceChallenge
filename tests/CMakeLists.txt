@@ -13,6 +13,8 @@ set(TestFiles
 	"ConcordanceTest.cpp" 
 	"OutputFormattingsTest.cpp"
 	"TextDocumentTravellerTest.cpp"
+	"WordSanitizerTest.cpp"
+	"SingletonTest.cpp"
 )
 
 add_executable(ConcordanceTest ${TestFiles})
