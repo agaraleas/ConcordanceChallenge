@@ -6,6 +6,7 @@
 
 #include "WordSanitizer.hpp"
 #include "TextDocumentTraveller.hpp"
+#include "WordValidator.hpp"
 
 
 //INTERNAL CLASS DECLARATIONS
@@ -206,7 +207,10 @@ void Concordance::add(const Word &word, const Sentence &sentence)
 	}
 
 	Word sanitized = sanitizer.sanitize(word);
-	m_impl->addOccurrence(sanitized, sentence);
+
+	if( WordValidator::isValid(word) ){
+		m_impl->addOccurrence(sanitized, sentence);
+	}
 }
 
 Concordance Concordance::makeEmpty()

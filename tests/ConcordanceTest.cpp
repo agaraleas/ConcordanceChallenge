@@ -70,7 +70,7 @@ CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences
     ++current;                                                                                       \
 })                                                                                                  \
 
-TEST(ConcordanceTests, DISABLED_ConcordanceCreationFromSentences_A)
+TEST(ConcordanceTests, ConcordanceCreationFromSentences_A)
 {
     Concordance concordance = generateConcordanceForDatasetA();
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfDatasetA();

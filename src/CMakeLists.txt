@@ -3,6 +3,7 @@ set(Sources
 	"OutputFormattings.cpp"
 	"TextDocumentTraveller.cpp"
 	"WordSanitizer.cpp"
+	"WordValidator.cpp"
 )
 
 set(HeadersSubdir "include/")
@@ -13,6 +14,7 @@ set(Headers
 	${HeadersSubdir}TextDocumentTraveller.hpp 
 	${HeadersSubdir}WordSanitizer.hpp 
 	${HeadersSubdir}Singleton.hpp 
+	${HeadersSubdir}WordValidator.hpp 
 )
 
 add_library(Concordance ${Sources} ${Headers})

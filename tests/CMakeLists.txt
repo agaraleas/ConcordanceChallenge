@@ -15,6 +15,7 @@ set(TestFiles
 	"TextDocumentTravellerTest.cpp"
 	"WordSanitizerTest.cpp"
 	"SingletonTest.cpp"
+	"WordValidatorTest.cpp"
 )
 
 add_executable(ConcordanceTest ${TestFiles})
