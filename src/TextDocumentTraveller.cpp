@@ -16,22 +16,74 @@ public:
 
 	void openFile(const std::string &filepath);
 
-	std::optional<std::string> getNext();
-	void putBack(const std::string &taken);
+	bool hasNext();
+	DocumentElement getNext();
 
 private:
 	void fillBuffer();
 
 private:
 	std::ifstream m_file_stream;
-	std::deque<std::string> m_buffered_chunks;
+	std::deque<DocumentElement> m_parse_buffer;
 };
 //END OF INTERNAL CLASS DECLARATIONS`
 
 //INTERNAL AUX FUNCTIONS
+namespace
+{
+
+std::deque<DocumentElement> &operator<<(std::deque<DocumentElement> &collection, DocumentElement &&element)
+{
+	collection.push_back( std::move(element) );
+	return collection;
+}
+
+std::deque<DocumentElement> &operator<<(std::deque<DocumentElement> &collection, std::deque<DocumentElement> &&other)
+{
+	std::move(other.begin(), other.end(), std::back_inserter(collection));
+	return collection;
+}
+
 static bool isWhitespace(char c)
 {
-	return c == ' ' || c == '\n';
+	return c == ' ' || c == '\n' || c == '\t';
+}
+
+static bool isSymbol(char c)
+{
+	return !std::isalnum(c);
+}
+
+static bool isDot(char c)
+{
+	return c == '.';
+}
+
+static bool isDot(const std::string::const_iterator &current, 
+				  const std::string &chunk)
+{
+	if( current == chunk.end() ) return false;
+	return *current == '.';
+}
+
+static bool isWordTerminatingCharacter(char c)
+{
+	return c == '.'  ||
+		   c == '!'  ||
+		   c == '?'  ||
+		   c == ','  ||
+		   c == '('  ||
+		   c == ')'  ||
+		   c == '['  ||
+		   c == ']'  ||
+		   c == '{'  ||
+		   c == '}'  ||
+		   c == ';'  ||
+		   c == ':'  ||
+		   c == '\'' ||
+		   c == '"'  ||
+		   c == '<'  ||
+		   c == '>';
 }
 
 static std::string getNextChunk(std::ifstream &stream)
@@ -52,6 +104,76 @@ static std::string getNextChunk(std::ifstream &stream)
 
 	return chunk;
 }
+
+static bool nextLetterIsLowercase(std::string::const_iterator current, const std::string &chunk)
+{
+	std::string::const_iterator next = current != chunk.end() ? current + 1 : chunk.end();
+
+	if( next != chunk.end() && std::isalpha(*next) ){
+		return std::islower(*next);
+	}
+
+	return false;
+}
+
+static std::string::const_iterator findEndOfAbbreviation(std::string::const_iterator current,
+														 const std::string &chunk)
+{
+	auto should_terminate_abbreviation = [](char c){
+		return isWordTerminatingCharacter(c) && (c != '.');
+	};
+
+	return std::find_if(current, chunk.end(), should_terminate_abbreviation);
+}
+
+static std::string::const_iterator findEndOfElement(std::string::const_iterator current,
+													const std::string &chunk)
+{
+	if( isSymbol(*current) ){
+		return ++current;
+	
+	} else {
+		auto word_end = std::find_if(current, chunk.end(), isWordTerminatingCharacter);
+		
+		if( isDot(word_end, chunk) && nextLetterIsLowercase(word_end, chunk) ){
+			word_end = findEndOfAbbreviation(word_end, chunk);
+		}
+		
+		return word_end;
+	}
+}
+
+static DocumentElement evaluate(const std::string::const_iterator &begin,
+								const std::string::const_iterator &end)
+{
+	if( std::distance(begin, end) == 1 && isSymbol(*begin) ){
+		return Symbol(*begin);
+	} else {
+		return Word(begin, end);
+	}
+}
+
+static std::deque<DocumentElement> splitChunkIntoDocumentElements(const std::string &chunk)
+{
+	std::deque<DocumentElement> parsed_elements;
+
+	std::string::const_iterator start = chunk.begin();
+	std::string::const_iterator end = findEndOfElement(start, chunk);
+
+	while( end != chunk.end() ){
+		parsed_elements << evaluate(start, end);
+		start = end;
+		end = findEndOfElement(start, chunk);
+	}
+
+	if( start != chunk.end() ){
+		parsed_elements << evaluate(start, end);
+	}
+
+	return parsed_elements;
+}
+
+}
 //END OF INTERNAL AUX FUNCTIONS
 
 //INTERNAL CLASS DEFINITIONS
@@ -67,25 +189,29 @@ void TextDocumentTraveller::Impl::openFile(const std::string &filepath)
 	m_file_stream.open(filepath);
 }
 
-std::optional<std::string> TextDocumentTraveller::Impl::getNext()
+bool TextDocumentTraveller::Impl::hasNext()
 {
-	std::optional<std::string> next;
-
-	if( m_buffered_chunks.empty() ){
+	if( m_parse_buffer.empty() ){
 		fillBuffer();
 	}
 
-	if( m_buffered_chunks.size() ){
-		next = m_buffered_chunks.front();
-		m_buffered_chunks.pop_front();
+	return m_parse_buffer.size();
+}
+
+DocumentElement TextDocumentTraveller::Impl::getNext()
+{
+	DocumentElement next;
+
+	if( m_parse_buffer.empty() ){
+		fillBuffer();
+	}
+
+	if( m_parse_buffer.size() ){
+		next = m_parse_buffer.front();
+		m_parse_buffer.pop_front();
 	}
 
 	return next;
-}
-
-void TextDocumentTraveller::Impl::putBack(const std::string &taken)
-{
-	m_buffered_chunks.push_front(taken);
 }
 
 void TextDocumentTraveller::Impl::fillBuffer()
@@ -98,7 +224,7 @@ void TextDocumentTraveller::Impl::fillBuffer()
 		std::string chunk = getNextChunk(m_file_stream);
 
 		if( chunk.size() ){
-			m_buffered_chunks.push_back(std::move(chunk));
+			m_parse_buffer << splitChunkIntoDocumentElements(chunk);
 		} else {
 			break;
 		}
@@ -108,6 +234,19 @@ void TextDocumentTraveller::Impl::fillBuffer()
 
 
 //EXTERNAL CLASS DEFINITIONS
+//==========================================================================|
+//								  Symbol									|
+//==========================================================================|
+Symbol::Symbol(char c)
+{
+	m_value = c;
+}
+
+char Symbol::get() const
+{
+	return m_value;
+}
+
 //==========================================================================|
 //							DocumentTraveller								|
 //==========================================================================|
@@ -121,16 +260,25 @@ TextDocumentTraveller::~TextDocumentTraveller()
 {
 }
 
-std::optional<std::string> TextDocumentTraveller::getNext()
+bool TextDocumentTraveller::hasNext()
+{
+	return m_impl->hasNext();
+}
+
+DocumentElement TextDocumentTraveller::getNext()
 {
 	return m_impl->getNext();
 }
-
-void TextDocumentTraveller::putBack(const std::string &taken)
-{
-	m_impl->putBack(taken);
-}
-
-
 //END OF EXTERNAL CLASS DEFINITIONS
+
+//EXTERNAL FUNCTION DEFINITIONS
+bool changesSentence(const Symbol &symbol)
+{
+	return symbol.get() == '.' ||
+		   symbol.get() == '!' ||
+		   symbol.get() == '?' ||
+		   symbol.get() == ';';
+}
+//END OF EXTERNAL FUNCTION DEFINITIONS
+
 

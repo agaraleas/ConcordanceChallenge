@@ -39,175 +39,191 @@ TEST_F(DocumentTravellerExample, TravelDocumentOfExample)
 {
     TextDocumentTraveller traveller(m_temp_file);
 
-    std::optional<std::string> chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "Given");
+    DocumentElement parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "Given");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "an");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "an");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "arbitrary");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "arbitrary");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "text");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "text");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "document");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "document");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "written");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "written");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "in");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "in");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "English,");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "English");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "write");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), ',');
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "a");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "write");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "program");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "a");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "that");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "program");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "will");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "that");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "generate");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "will");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "a");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "generate");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "concordance,");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "a");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "i.e.");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "concordance");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "an");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), ',');
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "alphabetical");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "i.e.");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "list");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "an");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "of");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "alphabetical");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "all");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "list");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "word");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "of");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "occurrences,");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "all");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "labeled");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "word");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "with");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "occurrences");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "word");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), ',');
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "frequencies.");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "labeled");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "Bonus:");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "with");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "label");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "word");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "each");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "frequencies");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "word");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), '.');
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "with");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "Bonus");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "the");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), ':');
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "sentence");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "label");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "numbers");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "each");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "in");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "word");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "which");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "with");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "each");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "the");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "occurrence");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "sentence");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "appeared");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "numbers");
 
-    chunk = traveller.getNext();
-    EXPECT_FALSE(chunk);
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "in");
 
-    chunk = traveller.getNext();
-    EXPECT_FALSE(chunk);
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "which");
+
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "each");
+
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "occurrence");
+
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "appeared");
+
+    EXPECT_FALSE(traveller.hasNext());
 }
 
 class DocumentTravellerSimpleSentence : public DocumentTravellerAbstractFixture
@@ -218,49 +234,146 @@ class DocumentTravellerSimpleSentence : public DocumentTravellerAbstractFixture
     }
 };
 
-TEST_F(DocumentTravellerSimpleSentence, TestPutBack)
+TEST_F(DocumentTravellerSimpleSentence, TestSimpleSentence)
 {
     TextDocumentTraveller traveller(m_temp_file);
 
-    std::optional<std::string> chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "This");
+    DocumentElement parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "This");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "is");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "is");
 
-    traveller.putBack(*chunk);
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "is");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "a");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "a");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "simple");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "simple");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Word>(&parsed));
+    EXPECT_EQ(std::get<Word>(parsed), "sentence");
 
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "sentence.");
+    parsed = traveller.getNext();
+    ASSERT_TRUE(std::get_if<Symbol>(&parsed));
+    EXPECT_EQ(std::get<Symbol>(parsed).get(), '.');
 
-    chunk = traveller.getNext();
-    ASSERT_FALSE(chunk);
-
-    traveller.putBack("sentence.");
-    chunk = traveller.getNext();
-    ASSERT_TRUE(chunk);
-    EXPECT_EQ(*chunk, "sentence.");
-
-    chunk = traveller.getNext();
-    ASSERT_FALSE(chunk);
+    EXPECT_FALSE(traveller.hasNext());
 }
 
 TEST(DocumentTravellerEdgeCases, NonExistingFile)
 {
     TextDocumentTraveller traveller("/if/this/path/is/found/I/should/have/played/in/the/lottery/instead.txt");
-    ASSERT_FALSE(traveller.getNext());
+    ASSERT_FALSE(traveller.hasNext());
+}
+
+TEST(SymbolStruct, BasicOperations)
+{
+    Symbol c;
+    EXPECT_EQ(c.get(), 0);
+
+    Symbol n('\n');
+    EXPECT_EQ(n.get(), '\n');
+}
+
+TEST(SymbolStruct, SentenceChange)
+{
+    EXPECT_TRUE(changesSentence(Symbol('!').get()));
+    EXPECT_FALSE(changesSentence(Symbol('"').get()));
+    EXPECT_FALSE(changesSentence(Symbol('#').get()));
+    EXPECT_FALSE(changesSentence(Symbol('$').get()));
+    EXPECT_FALSE(changesSentence(Symbol('%').get()));
+    EXPECT_FALSE(changesSentence(Symbol('&').get()));
+    EXPECT_FALSE(changesSentence(Symbol('\'').get()));
+    EXPECT_FALSE(changesSentence(Symbol('(').get()));
+    EXPECT_FALSE(changesSentence(Symbol(')').get()));
+    EXPECT_FALSE(changesSentence(Symbol('*').get()));
+    EXPECT_FALSE(changesSentence(Symbol('+').get()));
+    EXPECT_FALSE(changesSentence(Symbol(',').get()));
+    EXPECT_FALSE(changesSentence(Symbol('-').get()));
+    EXPECT_TRUE(changesSentence(Symbol('.').get()));
+    EXPECT_FALSE(changesSentence(Symbol('/').get()));
+    EXPECT_FALSE(changesSentence(Symbol('0').get()));
+    EXPECT_FALSE(changesSentence(Symbol('1').get()));
+    EXPECT_FALSE(changesSentence(Symbol('2').get()));
+    EXPECT_FALSE(changesSentence(Symbol('3').get()));
+    EXPECT_FALSE(changesSentence(Symbol('4').get()));
+    EXPECT_FALSE(changesSentence(Symbol('5').get()));
+    EXPECT_FALSE(changesSentence(Symbol('6').get()));
+    EXPECT_FALSE(changesSentence(Symbol('7').get()));
+    EXPECT_FALSE(changesSentence(Symbol('8').get()));
+    EXPECT_FALSE(changesSentence(Symbol('9').get()));
+    EXPECT_FALSE(changesSentence(Symbol(':').get()));
+    EXPECT_TRUE(changesSentence(Symbol(';').get()));
+    EXPECT_FALSE(changesSentence(Symbol('<').get()));
+    EXPECT_FALSE(changesSentence(Symbol('=').get()));
+    EXPECT_FALSE(changesSentence(Symbol('>').get()));
+    EXPECT_TRUE(changesSentence(Symbol('?').get()));
+    EXPECT_FALSE(changesSentence(Symbol('@').get()));
+    EXPECT_FALSE(changesSentence(Symbol('A').get()));
+    EXPECT_FALSE(changesSentence(Symbol('B').get()));
+    EXPECT_FALSE(changesSentence(Symbol('C').get()));
+    EXPECT_FALSE(changesSentence(Symbol('D').get()));
+    EXPECT_FALSE(changesSentence(Symbol('E').get()));
+    EXPECT_FALSE(changesSentence(Symbol('F').get()));
+    EXPECT_FALSE(changesSentence(Symbol('G').get()));
+    EXPECT_FALSE(changesSentence(Symbol('H').get()));
+    EXPECT_FALSE(changesSentence(Symbol('I').get()));
+    EXPECT_FALSE(changesSentence(Symbol('J').get()));
+    EXPECT_FALSE(changesSentence(Symbol('K').get()));
+    EXPECT_FALSE(changesSentence(Symbol('L').get()));
+    EXPECT_FALSE(changesSentence(Symbol('M').get()));
+    EXPECT_FALSE(changesSentence(Symbol('N').get()));
+    EXPECT_FALSE(changesSentence(Symbol('O').get()));
+    EXPECT_FALSE(changesSentence(Symbol('P').get()));
+    EXPECT_FALSE(changesSentence(Symbol('Q').get()));
+    EXPECT_FALSE(changesSentence(Symbol('R').get()));
+    EXPECT_FALSE(changesSentence(Symbol('S').get()));
+    EXPECT_FALSE(changesSentence(Symbol('T').get()));
+    EXPECT_FALSE(changesSentence(Symbol('U').get()));
+    EXPECT_FALSE(changesSentence(Symbol('V').get()));
+    EXPECT_FALSE(changesSentence(Symbol('W').get()));
+    EXPECT_FALSE(changesSentence(Symbol('X').get()));
+    EXPECT_FALSE(changesSentence(Symbol('Y').get()));
+    EXPECT_FALSE(changesSentence(Symbol('Z').get()));
+    EXPECT_FALSE(changesSentence(Symbol('[').get()));
+    EXPECT_FALSE(changesSentence(Symbol('\\').get()));
+    EXPECT_FALSE(changesSentence(Symbol(']').get()));
+    EXPECT_FALSE(changesSentence(Symbol('^').get()));
+    EXPECT_FALSE(changesSentence(Symbol('_').get()));
+    EXPECT_FALSE(changesSentence(Symbol('`').get()));
+    EXPECT_FALSE(changesSentence(Symbol('a').get()));
+    EXPECT_FALSE(changesSentence(Symbol('b').get()));
+    EXPECT_FALSE(changesSentence(Symbol('c').get()));
+    EXPECT_FALSE(changesSentence(Symbol('d').get()));
+    EXPECT_FALSE(changesSentence(Symbol('e').get()));
+    EXPECT_FALSE(changesSentence(Symbol('f').get()));
+    EXPECT_FALSE(changesSentence(Symbol('g').get()));
+    EXPECT_FALSE(changesSentence(Symbol('h').get()));
+    EXPECT_FALSE(changesSentence(Symbol('i').get()));
+    EXPECT_FALSE(changesSentence(Symbol('j').get()));
+    EXPECT_FALSE(changesSentence(Symbol('k').get()));
+    EXPECT_FALSE(changesSentence(Symbol('l').get()));
+    EXPECT_FALSE(changesSentence(Symbol('m').get()));
+    EXPECT_FALSE(changesSentence(Symbol('n').get()));
+    EXPECT_FALSE(changesSentence(Symbol('o').get()));
+    EXPECT_FALSE(changesSentence(Symbol('p').get()));
+    EXPECT_FALSE(changesSentence(Symbol('q').get()));
+    EXPECT_FALSE(changesSentence(Symbol('r').get()));
+    EXPECT_FALSE(changesSentence(Symbol('s').get()));
+    EXPECT_FALSE(changesSentence(Symbol('t').get()));
+    EXPECT_FALSE(changesSentence(Symbol('u').get()));
+    EXPECT_FALSE(changesSentence(Symbol('v').get()));
+    EXPECT_FALSE(changesSentence(Symbol('w').get()));
+    EXPECT_FALSE(changesSentence(Symbol('x').get()));
+    EXPECT_FALSE(changesSentence(Symbol('y').get()));
+    EXPECT_FALSE(changesSentence(Symbol('z').get()));
+    EXPECT_FALSE(changesSentence(Symbol('{').get()));
+    EXPECT_FALSE(changesSentence(Symbol('|').get()));
+    EXPECT_FALSE(changesSentence(Symbol('}').get()));
+    EXPECT_FALSE(changesSentence(Symbol('~').get()));
 }

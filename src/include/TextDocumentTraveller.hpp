@@ -4,14 +4,45 @@
 //Include Headers
 #include <memory>
 #include <string>
-#include <optional>
+#include <variant>
+
+//==========================================================================|
+//									Symbol									|
+//==========================================================================|
+// @brief: Object which represents a non alphanumeric character				|
+//		   Intention is to be able to seperate Symbols from Words in a 		|
+//		   variant. This is why an explicit type is needed					|
+//==========================================================================|
+
+class Symbol
+{
+public:
+	Symbol(){}
+	Symbol(char c);
+	char get() const;
+
+private:
+	char m_value = 0;
+};
+
+bool changesSentence(const Symbol &symbol);
+
+
+//==========================================================================|
+//									ParsedElement							|
+//==========================================================================|
+// @brief: A variant which can holds either words of a document or symbols	|
+//==========================================================================|
+using Word = std::string;
+using DocumentElement = std::variant<Word, Symbol>;
+
 
 //==========================================================================|
 //						   TextDocumentTraveller							|
 //==========================================================================|
-// @brief: Opens a plain text document and travels it in chunks. A chunk is	|
-//		   considered any series of alphanumeric characters till they reach |
-//		   whitespace														|
+// @brief: Opens a plain text document and travels it in elements. An		|
+//		   element is considered an english word or a symbol. Numbers are	|
+//		   treated as words.												|
 //==========================================================================|
 class TextDocumentTraveller
 {
@@ -21,8 +52,8 @@ public:
 	TextDocumentTraveller(const TextDocumentTraveller &other) = delete;
 	TextDocumentTraveller &operator=(const TextDocumentTraveller &other) = delete;
 
-	std::optional<std::string> getNext();
-	void putBack(const std::string &taken);
+	bool hasNext();
+	DocumentElement getNext();
 
 private:
 	class Impl;
