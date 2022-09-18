@@ -64,9 +64,9 @@ auto current = EXPECTATION.begin();                                             
                                                                                                     \
 CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences &occurrences){       \
     ASSERT_LE(index, EXPECTATION.size());                                                           \
-    EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
     EXPECT_EQ(word, current->first);                                                                \
-    EXPECT_EQ(occurrences.get(), current->second);                                                   \
+    EXPECT_EQ(occurrences.get(), current->second) << "Word: " << word;                                         \
+    EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
     ++current;                                                                                       \
 })                                                                                                  \
 
@@ -229,5 +229,95 @@ TEST_F(EllipsisHandlingOfSentenceFixture, EllipsisShouldNotChangeSentence)
 {
     Concordance concordance = Concordance::makeFromFile(m_temp_file);
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfEllipsisHandlingOfSentence();
+    COMPARE_CONCORDANCE_WITH_EXPECTATION(concordance, expectation);
+}
+
+class ExtremeDatasetFixture : public TestFileWritterFixture
+{
+public:
+    std::string getDataset() const override
+    {
+        /*1*/std::string dataset = "It is now ... too late.";
+        /*2*/dataset += "This idiot forgot a space(!!!) on start of\nthe sentence!\n";
+        /*3*/dataset += "I should be on sentence 3, right? ";
+        /*4*/dataset += "Or am I saying b@11$h!t ? \n";
+        /*5*/dataset += "Here is a list:\n\ta. ";
+        /*6*/dataset += "I should do this.\n\tb. ";
+        /*7*/dataset += "I should call at 067894254.\n";
+        /*8*/dataset += "This program is vulnerable to hyphenation. "; //Revert to hyphe-\nnation when program supports it
+        /*9*/dataset += "But it is known for now...\n";
+        /*10*/dataset += "Here is the last symbol that should change sentence;";
+        /*11*/dataset += "A new one should start now.\n";
+        /*12*/dataset += "Angelo's code is probably not handling this correctly yet.\n";
+        /*13*/dataset += "Env paths like %USER%/mypath.txt should be discarded.\n";
+        return dataset;
+    }
+};
+
+static std::map<Word, std::vector<Sentence> > getExpectationOfExtremeDataset()
+{
+    std::map<Word, std::vector<Sentence> > expectation = {
+        {"a", {2,5,5,11}},
+        {"b", {6}},
+        {"am", {4}},
+        {"angelo's", {12}},
+        {"at", {7}},
+        {"be", {3, 13}},
+        {"but", {9}},
+        {"call", {7}},
+        {"change", {10}},
+        {"code", {12}},
+        {"correctly", {12}},
+        {"do", {6}},
+        {"discarded", {13}},
+        {"env", {13}},
+        {"be", {3}},
+        {"for", {9}},
+        {"forgot", {2}},
+        {"handling", {12}},
+        {"here", {5,10}},
+        {"hyphenation", {8}},
+        {"idiot", {2}},
+        {"i", {3,4,6,7}},
+        {"it", {1,9}},
+        {"is", {1,5,8,9,10,12}},
+        {"known", {9}},
+        {"late", {1}},
+        {"last", {10}},
+        {"list", {5}},
+        {"like", {13}},
+        {"new", {11}},
+        {"now", {1,9,11}},
+        {"not", {12}},
+        {"on", {2,3}},
+        {"one", {11}},
+        {"or", {4}},
+        {"of", {2}},
+        {"paths", {13}},
+        {"program", {8}},
+        {"probably", {12}},
+        {"right", {3}},
+        {"saying", {4}},
+        {"sentence", {2,3,10}},
+        {"should", {3,6,7,10,11,13}},
+        {"space", {2}},
+        {"start", {2,11}},
+        {"symbol", {10}},
+        {"to", {8}},
+        {"too", {1}},
+        {"that", {10}},
+        {"the", {2,10}},
+        {"this", {2,6,8,12}},
+        {"yet", {12}},
+        {"vulnerable", {8}},
+    };
+
+    return expectation;
+}
+
+TEST_F(ExtremeDatasetFixture, DISABLED_ExtremeSymbolsDataset)
+{
+    Concordance concordance = Concordance::makeFromFile(m_temp_file);
+    std::map<Word, std::vector<Sentence> > expectation = getExpectationOfExtremeDataset();
     COMPARE_CONCORDANCE_WITH_EXPECTATION(concordance, expectation);
 }
