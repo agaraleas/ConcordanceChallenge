@@ -58,6 +58,7 @@ public:
 	void forEachWord(const IteratorFunc &run_callback) const;
 
 	void add(const Word&, const Sentence&);
+	bool exists(const Word &) const;
 
 private:
 	Concordance();

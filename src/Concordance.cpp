@@ -18,6 +18,7 @@ class Concordance::Impl
 public:
 	size_t size() const;
 	bool equalsWith(const Concordance::Impl &other) const;
+	bool exists(const Word &word);
 	void addOccurrence(const Word &word, Sentence sentence);
 	void forEachWord(const IteratorFunc &run_callback) const;
 
@@ -103,6 +104,11 @@ size_t Concordance::Impl::size() const
 bool Concordance::Impl::equalsWith(const Concordance::Impl &other) const
 {
 	return m_concordance == other.m_concordance;
+}
+
+bool Concordance::Impl::exists(const Word &word)
+{
+	return m_concordance.find(word) != m_concordance.end();
 }
 
 void Concordance::Impl::addOccurrence(const Word &word, Sentence sentence)
@@ -209,6 +215,11 @@ void Concordance::add(const Word &word, const Sentence &sentence)
 		Word sanitized = WordSanitizer::sanitize(word);
 		m_impl->addOccurrence(sanitized, sentence);
 	}
+}
+
+bool Concordance::exists(const Word &word) const
+{
+	return m_impl->exists(word);
 }
 
 Concordance Concordance::makeEmpty()

@@ -5,7 +5,7 @@
 //INTERNAL AUXILIARY CLASSES AND FUNCTIONS
 static bool shouldBeIgnoredInValidations(char c)
 {
-	return c == '.';
+	return c == '.' || c == '\'';
 }
 
 static bool containsIllegalSymbols(const Word &word)

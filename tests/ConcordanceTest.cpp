@@ -64,6 +64,7 @@ auto current = EXPECTATION.begin();                                             
                                                                                                     \
 CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences &occurrences){       \
     ASSERT_LE(index, EXPECTATION.size());                                                           \
+    ASSERT_TRUE(CONCORDANCE.exists(current->first)) << "Missing: "  << current->first;                                         \
     EXPECT_EQ(word, current->first);                                                                \
     EXPECT_EQ(occurrences.get(), current->second) << "Word: " << word;                                         \
     EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
@@ -258,10 +259,10 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExtremeDataset()
 {
     std::map<Word, std::vector<Sentence> > expectation = {
         {"a", {2,5,5,11}},
-        {"b", {6}},
         {"am", {4}},
         {"angelo's", {12}},
         {"at", {7}},
+        {"b", {6}},
         {"be", {3, 13}},
         {"but", {9}},
         {"call", {7}},

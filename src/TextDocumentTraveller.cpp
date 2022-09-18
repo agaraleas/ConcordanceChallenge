@@ -80,7 +80,6 @@ static bool isWordTerminatingCharacter(char c)
 		   c == '}'  ||
 		   c == ';'  ||
 		   c == ':'  ||
-		   c == '\'' ||
 		   c == '"'  ||
 		   c == '<'  ||
 		   c == '>';
