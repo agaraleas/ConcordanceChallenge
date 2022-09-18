@@ -112,7 +112,9 @@ static std::vector<CommandLineArg> parseCommandLineArguments(const std::span<cha
 
     CommandLineArg buffer;
 
-    for( std::string input : entries ){
+    for( auto it = entries.begin() + 1; it != entries.end(); ++it ){
+        std::string input = *it;
+
         if( isKey(input) ){
             pushFilledBuffer(buffer, args);
             buffer.key = input;
@@ -203,7 +205,7 @@ ConcordanceGenerator::ConcordanceGenerator(const std::vector<CommandLineArg> &ex
 int ConcordanceGenerator::execute()
 {
     auto does_not_refer_to_file = [](const CommandLineArg &arg){
-        return !refersToFile(arg);
+        return arg.key.size() && !refersToFile(arg);
     };
 
     std::vector<CommandLineArg> args = getArgs();
