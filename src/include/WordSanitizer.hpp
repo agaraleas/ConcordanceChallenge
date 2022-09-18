@@ -10,23 +10,14 @@ using Word = std::string;
 //==========================================================================|
 //								WordSanitizer								|
 //==========================================================================|
-// @brief: Sanitizes a word to be used in a concordance						|
-//		   sanitization is necessary to get rid of symbols and capital		|
-//		   letters															|
+// @brief: Sanitizes a word to be used in a concordance.					|
+//		   Sanitization is necessary since words of concordance should		|
+//         be lowercase														|
 //==========================================================================|
 class WordSanitizer
 {
 public:
-	WordSanitizer();
-
-	void setAbbreviationSanitization();
-	Word sanitize(const Word &word);
-
-public:
-	class SymbolHandlingStrategy;
-
-private:
-	SymbolHandlingStrategy *m_symbol_handling;
+	static Word sanitize(const Word &word);
 };
 
 #endif

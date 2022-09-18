@@ -200,15 +200,8 @@ void Concordance::forEachWord(const IteratorFunc &run_callback) const
 
 void Concordance::add(const Word &word, const Sentence &sentence)
 {
-	WordSanitizer sanitizer;
-
-	if( isAbbreviation(word) ){
-		sanitizer.setAbbreviationSanitization();
-	}
-
-	Word sanitized = sanitizer.sanitize(word);
-
 	if( WordValidator::isValid(word) ){
+		Word sanitized = WordSanitizer::sanitize(word);
 		m_impl->addOccurrence(sanitized, sentence);
 	}
 }
