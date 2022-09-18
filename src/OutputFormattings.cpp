@@ -60,6 +60,11 @@ static std::string joinLettersOfConvertedIndex(char letter, size_t quantity)
 
 	return ss.str();
 }
+
+static void appendSpace(std::string &str)
+{
+	str += ' ';
+}
 //END OF INTERNAL FUNCTION DEFINITIONS
 
 
@@ -78,6 +83,7 @@ std::string makePrintable(const Word &word)
 		fillWithTrailingWhitespace(printable, MaximumPrintableWordSize - printable.size());
 	}
 
+	appendSpace(printable);
 	return printable;
 }
 
@@ -98,6 +104,7 @@ std::string makePrintable(const Occurrences &occurrences)
 	}
 
 	printable.back() = '}';
+	appendSpace(printable);
 	return printable;
 }
 
@@ -120,6 +127,7 @@ std::string makePrintable(WordIndex index)
 		fillWithTrailingWhitespace(printable, MaximumPrintableIndexSize - printable.size());
 	}
 
+	appendSpace(printable);
 	return printable;
 }
 //END OF EXTERNAL FUNCTION DEFINITIONS
