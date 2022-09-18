@@ -42,6 +42,11 @@ static bool changesSentence(const DocumentElement &element)
 	return symbol ? changesSentence(*symbol) : false;
 }
 
+static bool startsWithCapital(const Word &word)
+{
+	return word.size() ? std::isupper(static_cast<unsigned char>(word.front())) : false;
+}
+
 class ParsedElementVisitor
 {
 public:
@@ -64,16 +69,16 @@ ParsedElementVisitor::ParsedElementVisitor() : m_concordance( Concordance::makeE
 
 void ParsedElementVisitor::operator()(const Word &word)
 {
+	if( startsWithCapital(word) && changesSentence(m_previous_element) ){
+		++m_current_sentence;
+	}
+
 	m_concordance.add(word, m_current_sentence);
 	m_previous_element = word;
 }
 
 void ParsedElementVisitor::operator()(const Symbol &symbol)
 {
-	if( changesSentence(symbol) && !changesSentence(m_previous_element) ){
-		++m_current_sentence;
-	}
-
 	m_previous_element = symbol;
 }
 

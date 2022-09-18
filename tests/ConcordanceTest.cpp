@@ -117,30 +117,41 @@ TEST(ConcordanceTests, ConcordanceCreationFromSentences_B)
     COMPARE_CONCORDANCE_WITH_EXPECTATION(concordance, expectation);
 }
 
-
-class createConcordanceFromFileFixture : public ::testing::Test {
+class TestFileWritterFixture : public ::testing::Test
+{
 public:
-    createConcordanceFromFileFixture() {}
-    ~createConcordanceFromFileFixture() {}
+    TestFileWritterFixture() {}
+    virtual ~TestFileWritterFixture() {}
+    virtual std::string getDataset() const = 0;
 
-    void SetUp() {
+    void SetUp() 
+    {
         m_temp_file = std::tmpnam(nullptr);
 
-        std::string dataset = "Given an arbitrary text document written in English, write a program that will generate a \n";
-        dataset += "concordance, i.e. an alphabetical list of all word occurrences, labeled with word \n";
-        dataset += "frequencies. \n\n";
-        dataset += "Bonus: label each word with the sentence numbers in which each occurrence appeared";
-
         std::ofstream out(m_temp_file);
-        out << dataset;
+        out << getDataset();
         out.close();
     }
 
-    void TearDown() {
+    void TearDown() 
+    {
         remove(m_temp_file.c_str());
     }
 
     std::string m_temp_file;
+};
+
+class GivenExampleFixture : public TestFileWritterFixture 
+{
+public:
+    std::string getDataset() const override
+    {
+        std::string dataset = "Given an arbitrary text document written in English, write a program that will generate a \n";
+        dataset += "concordance, i.e. an alphabetical list of all word occurrences, labeled with word \n";
+        dataset += "frequencies. \n\n";
+        dataset += "Bonus: label each word with the sentence numbers in which each occurrence appeared";
+        return dataset;
+    }
 };
 
 static std::map<Word, std::vector<Sentence> > getExpectationOfExampleDataset()
@@ -185,9 +196,38 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExampleDataset()
     return expectation;
 }
 
-TEST_F(createConcordanceFromFileFixture, ExampleDataset)
+TEST_F(GivenExampleFixture, ExampleDataset)
 {
     Concordance concordance = Concordance::makeFromFile(m_temp_file);
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfExampleDataset();
+    COMPARE_CONCORDANCE_WITH_EXPECTATION(concordance, expectation);
+}
+
+class EllipsisHandlingOfSentenceFixture : public TestFileWritterFixture
+{
+public:
+    std::string getDataset() const override
+    {
+        return "It is now .... too late";
+    }
+};
+
+static std::map<Word, std::vector<Sentence> > getExpectationOfEllipsisHandlingOfSentence()
+{
+    std::map<Word, std::vector<Sentence> > expectation = {
+        {"it", {1}},
+        {"is", {1}},
+        {"late", {1}},
+        {"now", {1}},
+        {"too", {1}},
+    };
+
+    return expectation;
+}
+
+TEST_F(EllipsisHandlingOfSentenceFixture, EllipsisShouldNotChangeSentence)
+{
+    Concordance concordance = Concordance::makeFromFile(m_temp_file);
+    std::map<Word, std::vector<Sentence> > expectation = getExpectationOfEllipsisHandlingOfSentence();
     COMPARE_CONCORDANCE_WITH_EXPECTATION(concordance, expectation);
 }
