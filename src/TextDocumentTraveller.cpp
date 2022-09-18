@@ -1,5 +1,6 @@
 #include "TextDocumentTraveller.hpp"
 #include <deque>
+#include <vector>
 #include <fstream>
 
 static const size_t BufferedChunksSize = 20;
@@ -28,10 +29,98 @@ private:
 };
 //END OF INTERNAL CLASS DECLARATIONS`
 
-//INTERNAL AUX FUNCTIONS
+
+//INTERNAL AUX CLASSES AND FUNCTIONS
 namespace
 {
 
+//INTERNAL AUX CLASS DECLARATIONS
+//==========================================================================|
+//								EndCalculator								|
+//==========================================================================|
+// @brief: Calculates the end of a DocumentElement of a chunk.				|
+//		   A document chunk can contain more than one DocumentElements,like:|
+//		   'well,no' --> 3 document elements: 'well' - ',' - 'no'			|
+//		   The EndCalculator returns the end iterator of the DocumentElement|
+//		   under consideration												|
+//==========================================================================|
+
+class ElementEndCalculator
+{
+public:
+	ElementEndCalculator(const std::string::const_iterator &start, const std::string &document_chunk);
+	virtual ~ElementEndCalculator() {}
+
+	std::string::const_iterator calcEndOfDocumentElement();
+
+protected:
+	const std::string::const_iterator &getStart() const;
+	const std::string &getDocumentChunk() const;
+	
+	enum class CharacterHandling
+	{
+		Consume,
+		MarkAsEnd,
+	};
+	virtual CharacterHandling checkCharacter(const std::string::const_iterator &current) = 0;
+
+private:
+	std::string::const_iterator m_element_start;
+	const std::string &m_document_chunk;
+};
+
+//==========================================================================|
+//							SymbolEndCalculator								|
+//==========================================================================|
+// @brief: SymbolEndCalculator - Concrete class which calculates the end of |
+//		   a Symbol.														|
+//		   A symbol always consists of a single character					|
+//==========================================================================|
+
+class SymbolEndCalculator : public ElementEndCalculator
+{
+public:
+	SymbolEndCalculator(const std::string::const_iterator &start, const std::string &document_chunk);
+private:
+	CharacterHandling checkCharacter(const std::string::const_iterator &current);
+};
+
+
+//==========================================================================|
+//							WordEndCalculator								|
+//==========================================================================|
+// @brief: WordEndCalculator - Concrete class which calculates the end      |
+//		   of a word. A word does not necessarily ends on the end of the 	|
+//		   chunk, or on  a word terminating character.						|
+//		   Special handling needs to be done for abbreviations or words with| 
+//		   special characters												|
+//==========================================================================|
+
+class WordEndCalculator : public ElementEndCalculator
+{
+public:
+	WordEndCalculator(const std::string::const_iterator &start, const std::string &document_chunk);
+
+private:
+	CharacterHandling checkCharacter(const std::string::const_iterator &current);
+
+	enum class WordType
+	{
+		EnglishWord,
+		Abbreviation,
+		SpecialCharacters,
+	};
+	
+	void updateWordType(const std::string::const_iterator &current);
+	
+private:
+	WordType m_type = WordType::EnglishWord;
+};
+//END OF INTERNAL AUX CLASS DECLARATIONS
+
+
+
+//INTERNAL AUX FUNCTIONS
 std::deque<DocumentElement> &operator<<(std::deque<DocumentElement> &collection, DocumentElement &&element)
 {
 	collection.push_back( std::move(element) );
@@ -59,13 +148,6 @@ static bool isDot(char c)
 	return c == '.';
 }
 
-static bool isDot(const std::string::const_iterator &current, 
-				  const std::string &chunk)
-{
-	if( current == chunk.end() ) return false;
-	return *current == '.';
-}
-
 static bool isWordTerminatingCharacter(char c)
 {
 	return c == '.'  ||
@@ -83,6 +165,17 @@ static bool isWordTerminatingCharacter(char c)
 		   c == '"'  ||
 		   c == '<'  ||
 		   c == '>';
+}
+
+static bool canTerminateAbbreviation(const std::string::const_iterator &current)
+{
+	if( isDot(*current) ){
+		std::string::const_iterator previous = current - 1;
+		return isDot(*previous);
+
+	} else {
+		return isWordTerminatingCharacter(*current);
+	}
 }
 
 static std::string getNextChunk(std::ifstream &stream)
@@ -115,39 +208,38 @@ static bool nextLetterIsLowercase(std::string::const_iterator current, const std
 	return false;
 }
 
-static std::string::const_iterator findEndOfAbbreviation(std::string::const_iterator current,
-														 const std::string &chunk)
+namespace EndCalculatorFactory
 {
-	auto should_terminate_abbreviation = [](char c){
-		return isWordTerminatingCharacter(c) && (c != '.');
-	};
 
-	return std::find_if(current, chunk.end(), should_terminate_abbreviation);
+	std::unique_ptr<ElementEndCalculator> getCalculator(std::string::const_iterator start,
+		const std::string &document_chunk)
+	{
+		std::unique_ptr<ElementEndCalculator> calculator;
+
+		if( isSymbol(*start) ){
+			calculator = std::make_unique<SymbolEndCalculator>(start, document_chunk);
+		} else{
+			calculator = std::make_unique<WordEndCalculator>(start, document_chunk);
+		}
+
+		return calculator;
+	}
+
 }
 
 static std::string::const_iterator findEndOfElement(std::string::const_iterator current,
-													const std::string &chunk)
+	const std::string &chunk)
 {
-	if( isSymbol(*current) ){
-		return ++current;
-	
-	} else {
-		auto word_end = std::find_if(current, chunk.end(), isWordTerminatingCharacter);
-		
-		if( isDot(word_end, chunk) && nextLetterIsLowercase(word_end, chunk) ){
-			word_end = findEndOfAbbreviation(word_end, chunk);
-		}
-		
-		return word_end;
-	}
+	std::unique_ptr<ElementEndCalculator> calculator = EndCalculatorFactory::getCalculator(current, chunk);
+	return calculator->calcEndOfDocumentElement();
 }
 
 static DocumentElement evaluate(const std::string::const_iterator &begin,
-								const std::string::const_iterator &end)
+	const std::string::const_iterator &end)
 {
 	if( std::distance(begin, end) == 1 && isSymbol(*begin) ){
 		return Symbol(*begin);
-	} else {
+	} else{
 		return Word(begin, end);
 	}
 }
@@ -171,9 +263,80 @@ static std::deque<DocumentElement> splitChunkIntoDocumentElements(const std::str
 
 	return parsed_elements;
 }
-
-}
 //END OF INTERNAL AUX FUNCTIONS
+
+
+//INTERNAL AUX CLASS DEFINITIONS
+ElementEndCalculator::ElementEndCalculator(const std::string::const_iterator &start,
+							 const std::string &document_chunk) : m_element_start(start), 
+																  m_document_chunk(document_chunk)
+{
+}
+
+SymbolEndCalculator::SymbolEndCalculator(const std::string::const_iterator &start,
+										 const std::string &document_chunk) : ElementEndCalculator(start, document_chunk)
+{
+}
+
+ElementEndCalculator::CharacterHandling SymbolEndCalculator::checkCharacter(const std::string::const_iterator &current)
+{
+	return current == getStart() + 1 ? CharacterHandling::MarkAsEnd : CharacterHandling::Consume;
+}
+
+WordEndCalculator::WordEndCalculator(const std::string::const_iterator &start,
+									 const std::string &document_chunk) : ElementEndCalculator(start, document_chunk)
+{
+}
+
+ElementEndCalculator::CharacterHandling WordEndCalculator::checkCharacter(const std::string::const_iterator &current)
+{
+	updateWordType(current);
+
+	switch( m_type ){
+	case WordType::EnglishWord:
+		return isWordTerminatingCharacter(*current) ? CharacterHandling::MarkAsEnd : CharacterHandling::Consume;
+	case WordType::Abbreviation:
+		return canTerminateAbbreviation(current) ? CharacterHandling::MarkAsEnd : CharacterHandling::Consume;
+
+	default:
+		return CharacterHandling::Consume;
+	}
+}
+
+void WordEndCalculator::updateWordType(const std::string::const_iterator &current)
+{
+	if( isSymbol(*current) && !isWordTerminatingCharacter(*current) ){
+		m_type = WordType::SpecialCharacters;
+	} else if( isDot(*current) && nextLetterIsLowercase(current, getDocumentChunk()) ){
+		m_type = WordType::Abbreviation;
+	}
+}
+
+std::string::const_iterator ElementEndCalculator::calcEndOfDocumentElement()
+{
+	auto current = getStart();
+	std::string::const_iterator end = getDocumentChunk().end();
+
+	while( current != end && checkCharacter(current) == CharacterHandling::Consume ){
+		++current;
+	}
+
+	return current;
+}
+
+const std::string::const_iterator &ElementEndCalculator::getStart() const
+{
+	return m_element_start;
+}
+const std::string &ElementEndCalculator::getDocumentChunk() const
+{
+	return m_document_chunk;
+}
+//END OFINTERNAL AUX CLASS DEFINITIONS
+
+} //END OF ANONYMOUS NAMESPACE
+//END OF INTERNAL AUX CLASSES AND FUNCTIONS
+
 
 //INTERNAL CLASS DEFINITIONS
 TextDocumentTraveller::Impl::~Impl()

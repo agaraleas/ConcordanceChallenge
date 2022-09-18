@@ -64,7 +64,8 @@ auto current = EXPECTATION.begin();                                             
                                                                                                     \
 CONCORDANCE.forEachWord([&](WordIndex index, const Word &word, const Occurrences &occurrences){       \
     ASSERT_LE(index, EXPECTATION.size());                                                           \
-    ASSERT_TRUE(CONCORDANCE.exists(current->first)) << "Missing: "  << current->first;                                         \
+    ASSERT_TRUE(CONCORDANCE.exists(current->first)) << "Missing: "  << current->first;              \
+    ASSERT_TRUE(EXPECTATION.count(word)) << "Excessive word: "  << word;              \
     EXPECT_EQ(word, current->first);                                                                \
     EXPECT_EQ(occurrences.get(), current->second) << "Word: " << word;                                         \
     EXPECT_EQ(index, std::distance(EXPECTATION.begin(), current) + 1);                              \
@@ -316,7 +317,7 @@ static std::map<Word, std::vector<Sentence> > getExpectationOfExtremeDataset()
     return expectation;
 }
 
-TEST_F(ExtremeDatasetFixture, DISABLED_ExtremeSymbolsDataset)
+TEST_F(ExtremeDatasetFixture, ExtremeSymbolsDataset)
 {
     Concordance concordance = Concordance::makeFromFile(m_temp_file);
     std::map<Word, std::vector<Sentence> > expectation = getExpectationOfExtremeDataset();
