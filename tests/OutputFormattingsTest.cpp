@@ -30,3 +30,25 @@ TEST(ConcordanceFormat, OccurrenceDisplay)
     occurrences << 3 << 4;
     EXPECT_EQ(makePrintable(occurrences), "{3:1,3,4}");
 }
+
+TEST(ConcordanceFormat, ConcordanceJoin)
+{
+    WordIndex index = 3;
+    Word word = "angelo";
+    Occurrences occurrences; occurrences << 1;
+    EXPECT_EQ(joinConcordanceLine(index, word, occurrences), "c.       angelo               {1:1}");
+
+    index = 99999999999;
+    word = "longlonglonglonglonglonglonglongword";
+    occurrences = Occurrences(); occurrences << 1 << 2 << 3 << 4;
+    EXPECT_EQ(joinConcordanceLine(index, word, occurrences), "#######. longlonglonglongl... {4:1,2,3,4}");
+
+    index = 4;
+    word = "longlonglonglonglonglonglonglongword";
+    occurrences = Occurrences(); occurrences << 1 << 2 << 3 << 4;
+    EXPECT_EQ(joinConcordanceLine(index, word, occurrences), "d.       longlonglonglongl... {4:1,2,3,4}");
+
+    index = 33333333333;
+    word = "angelo";
+    EXPECT_EQ(joinConcordanceLine(index, word, occurrences), "#######. angelo               {4:1,2,3,4}");
+}

@@ -30,11 +30,6 @@ static void fillWithTrailingWhitespace(Word &word, size_t quantity)
 	word = ss.str();
 }
 
-static void printWordOfConcordance(WordIndex index, const Word &word, const Occurrences &occurrences)
-{
-	std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurrences) << std::endl;
-}
-
 static std::tuple<char, size_t> convertWordIndexToEnglishLetters(WordIndex index)
 {
 	//Convert to zero-based start: First index of Word Index is 1 while C++ 
@@ -61,9 +56,9 @@ static std::string joinLettersOfConvertedIndex(char letter, size_t quantity)
 	return ss.str();
 }
 
-static void appendSpace(std::string &str)
+static char addSpace()
 {
-	str += ' ';
+    return ' ';
 }
 //END OF INTERNAL FUNCTION DEFINITIONS
 
@@ -83,7 +78,6 @@ std::string makePrintable(const Word &word)
 		fillWithTrailingWhitespace(printable, MaximumPrintableWordSize - printable.size());
 	}
 
-	appendSpace(printable);
 	return printable;
 }
 
@@ -104,7 +98,6 @@ std::string makePrintable(const Occurrences &occurrences)
 	}
 
 	printable.back() = '}';
-	appendSpace(printable);
 	return printable;
 }
 
@@ -127,7 +120,13 @@ std::string makePrintable(WordIndex index)
 		fillWithTrailingWhitespace(printable, MaximumPrintableIndexSize - printable.size());
 	}
 
-	appendSpace(printable);
 	return printable;
+}
+
+std::string joinConcordanceLine(WordIndex index, const Word &word, const Occurrences &occurrences)
+{
+	return	makePrintable(index) + addSpace() +
+            makePrintable(word)  + addSpace() +
+            makePrintable(occurrences);
 }
 //END OF EXTERNAL FUNCTION DEFINITIONS

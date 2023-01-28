@@ -18,5 +18,6 @@ class Occurrences;
 std::string makePrintable(WordIndex index);
 std::string makePrintable(const Word &word);
 std::string makePrintable(const Occurrences &occurrences);
+std::string joinConcordanceLine(WordIndex index, const Word &word, const Occurrences &occurrences);
 
 #endif

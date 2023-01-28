@@ -171,7 +171,7 @@ static bool existHelpFlag(const std::vector<CommandLineArg> &all_args)
 static void printConcordance(const Concordance &concordance)
 {
     auto print_to_console = [](WordIndex index, const Word &word, const Occurrences &occurrences){
-        std::cout << makePrintable(index) << makePrintable(word) << makePrintable(occurrences) << std::endl;
+        std::cout <<  joinConcordanceLine(index, word, occurrences) << std::endl;
     };
 
     concordance.forEachWord(print_to_console);
